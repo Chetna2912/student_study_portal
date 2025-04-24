@@ -1,0 +1,57 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 5px; }
+    input[type="number"], select { width: 100%; padding: 8px; box-sizing: border-box; margin-bottom: 10px; }
+    .row { display: flex; flex-wrap: wrap; margin-right: -15px; margin-left: -15px; }
+    .col-md-4 { flex: 0 0 33.333333%; max-width: 33.333333%; padding-right: 15px; padding-left: 15px; }
+</style>
+
+<div class="container text-center">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <legend class="border-bottom mb-4">Select Measurement Type</legend>
+            {{ form.as_p }}
+            <button class="btn btn-outline-info" type="submit">Select</button>
+        </div>
+        {% if m_form %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Conversion Details</legend>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ m_form.input.label_tag }} {{ m_form.input }}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{ m_form.measure1.id_for_label }}">From</label>
+                        <select name="{{ m_form.measure1.name }}" id="{{ m_form.measure1.id_for_label }}">
+                            {% for value, text in m_form.measure1.field.choices %}
+                                <option value="{{ value }}" {% if m_form.measure1.value == value %}selected{% endif %}>{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{ m_form.measure2.id_for_label }}">To</label>
+                        <select name="{{ m_form.measure2.name }}" id="{{ m_form.measure2.id_for_label }}">
+                            {% for value, text in m_form.measure2.field.choices %}
+                                <option value="{{ value }}" {% if m_form.measure2.value == value %}selected{% endif %}>{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+            {% if answer %}
+                <fieldset class="form-group">
+                    {{ answer }}
+                </fieldset>
+            {% endif %}
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Convert</button>
+            </div>
+        {% endif %}
+    </form>
+</div>
+{% endblock content %}
+
